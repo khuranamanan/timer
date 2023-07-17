@@ -12,11 +12,6 @@ function Timer() {
   const intervalRef = useRef(null);
   const startTimeRef = useRef(0);
   const ringRef = useRef(new Audio(ring));
-  const playBtnRef = useRef();
-
-  function handlePlayAudio() {
-    ringRef.current.play();
-  }
 
   function stopTimer() {
     clearInterval(intervalRef.current);
@@ -47,8 +42,7 @@ function Timer() {
       const remainingTimeinMs = totalMilliseconds - elapsedTime;
 
       if (remainingTimeinMs <= 0) {
-        // ringRef.current.play();
-        playBtnRef.current.click();
+        ringRef.current.play();
         stopTimer();
         toast.success("Timer Completed");
         // console.timeEnd("startTimer");
@@ -156,9 +150,6 @@ function Timer() {
           className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
         >
           Reset
-        </button>
-        <button ref={playBtnRef} onClick={handlePlayAudio} hidden={true}>
-          Play
         </button>
       </div>
 
