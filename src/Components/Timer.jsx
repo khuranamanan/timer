@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { convertToMs, convertToTime } from "../Utils/timeConversionUtils";
 import { toast } from "react-toastify";
+import ring from "../assets/ring.mp3";
 
 function Timer() {
   const [hours, setHours] = useState(0);
@@ -10,6 +11,7 @@ function Timer() {
   const [remainingTimeMs, setRemainingTimeMs] = useState(0);
   const intervalRef = useRef(null);
   const startTimeRef = useRef(0);
+  const ringRef = useRef(new Audio(ring));
 
   function stopTimer() {
     clearInterval(intervalRef.current);
@@ -40,6 +42,7 @@ function Timer() {
       const remainingTimeinMs = totalMilliseconds - elapsedTime;
 
       if (remainingTimeinMs <= 0) {
+        ringRef.current.play();
         stopTimer();
         toast.success("Timer Completed");
         // console.timeEnd("startTimer");
@@ -50,6 +53,13 @@ function Timer() {
     }, 100);
   }
 
+  function stopRingPlayback() {
+    if (ringRef.current) {
+      ringRef.current.pause();
+      ringRef.current.currentTime = 0;
+    }
+  }
+
   function resetTimer() {
     if (isRunning) {
       stopTimer();
@@ -58,6 +68,7 @@ function Timer() {
     setMinutes(0);
     setSeconds(0);
     toast.dismiss();
+    stopRingPlayback();
   }
 
   const remainingTime =
@@ -142,14 +153,17 @@ function Timer() {
         </button>
       </div>
 
-      <div>
+      <div className="flex gap-1">
         <p className="text-xl">
-          {`${String(remainingTime?.hours).padStart(2, "0")}:${String(
-            remainingTime?.minutes
-          ).padStart(2, "0")}:${String(remainingTime?.seconds).padStart(
-            2,
-            "0"
-          )}`}
+          {String(remainingTime?.hours).padStart(2, "0")}
+        </p>
+        <p className="text-xl">:</p>
+        <p className="text-xl">
+          {String(remainingTime?.minutes).padStart(2, "0")}
+        </p>
+        <p className="text-xl">:</p>
+        <p className="text-xl">
+          {String(remainingTime?.seconds).padStart(2, "0")}
         </p>
       </div>
     </div>
